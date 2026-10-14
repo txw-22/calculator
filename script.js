@@ -14,16 +14,24 @@ const buttons = document.querySelector('.buttons');
 
 // 화면 업데이트 함수
 function updateDisplay() {
-  if (display) {
-    if (currentInput.length > 10 && currentInput !== 'Error') {
-      // 긴 숫자는 지수 표기법 또는 소수점 제한으로 표시
-      display.textContent = parseFloat(currentInput).toPrecision(10);
-    } else {
-      display.textContent = currentInput;
-    }
+  if (!display) return;
+
+  if (currentInput === 'Error') {
+    display.textContent = 'Error';
+    return;
+  }
+
+  // 불필요한 끝자리 0 없이 숫자 표시
+  if (currentInput.length > 10) {
+    display.textContent = String(
+      Number(parseFloat(currentInput).toPrecision(10))
+    );
+  } else {
+    display.textContent = currentInput;
   }
 }
 
+// 계산 과정 표시
 function updateHistoryDisplay() {
   if (historyDisplay) {
     historyDisplay.textContent = calculationHistory;
@@ -43,26 +51,62 @@ function getOperatorSymbol(op) {
 
 // 숫자 버튼 처리
 function inputDigit(digit) {
-  if (waitingForSecondOperand === true) {
+  // 오류 상태에서는 새로운 계산 시작
+  if (currentInput === 'Error') {
+    firstOperand = null;
+    operator = null;
+    waitingForSecondOperand = false;
+    calculationHistory = '';
+    currentInput = digit;
+
+    updateHistoryDisplay();
+    updateDisplay();
+    return;
+  }
+
+  if (waitingForSecondOperand) {
+    // 계산 완료 후 새 숫자를 입력하면 이전 결과 초기화
+    if (operator === null) {
+      firstOperand = null;
+      calculationHistory = '';
+      updateHistoryDisplay();
+    }
+
     currentInput = digit;
     waitingForSecondOperand = false;
   } else {
-    currentInput = currentInput === '0' || currentInput === 'Error' ? digit : currentInput + digit;
+    currentInput = currentInput === '0'
+      ? digit
+      : currentInput + digit;
   }
+
   updateDisplay();
 }
 
 // 소수점 처리
 function inputDecimal(dot) {
-  if (waitingForSecondOperand === true) {
+  if (currentInput === 'Error') {
+    resetCalculator();
+  }
+
+  if (waitingForSecondOperand) {
+    // 계산 완료 후 소수점으로 새 계산 시작
+    if (operator === null) {
+      firstOperand = null;
+      calculationHistory = '';
+      updateHistoryDisplay();
+    }
+
     currentInput = '0.';
     waitingForSecondOperand = false;
     updateDisplay();
     return;
   }
-  if (!currentInput.includes(dot) && currentInput !== 'Error') {
+
+  if (!currentInput.includes(dot)) {
     currentInput += dot;
   }
+
   updateDisplay();
 }
 
@@ -79,21 +123,30 @@ function resetCalculator() {
 
 // 실제 사칙연산 함수
 function calculate(first, second, op) {
+  let result;
+
   switch (op) {
     case 'add':
-      return first + second;
+      result = first + second;
+      break;
     case 'subtract':
-      return first - second;
+      result = first - second;
+      break;
     case 'multiply':
-      return first * second;
+      result = first * second;
+      break;
     case 'divide':
       if (second === 0) {
-        return 'Error'; // 0으로 나누기 오류 처리
+        return 'Error';
       }
-      return first / second;
+      result = first / second;
+      break;
     default:
       return second;
   }
+
+  // 부동소수점 오차를 줄이고 최대 12자리 유효숫자로 정리
+  return Number(result.toPrecision(12));
 }
 
 // 연산 로직
@@ -119,6 +172,19 @@ function performCalculation(nextOperator) {
   } else if (operator) {
     // 이전 연산 수행
     const result = calculate(firstOperand, inputValue, operator);
+
+    // 0으로 나누기 등 계산 오류 처리
+    if (result === 'Error') {
+      currentInput = 'Error';
+      firstOperand = null;
+      operator = null;
+      waitingForSecondOperand = true;
+      calculationHistory = '';
+
+      updateHistoryDisplay();
+      updateDisplay();
+      return;
+    }
 
     currentInput = String(result);
     firstOperand = result;
