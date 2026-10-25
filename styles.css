@@ -1,82 +1,652 @@
-/* style.css */
-body {
-  font-family: Arial, sans-serif;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  margin: 0;
-  background-color: #f4f4f4;
+/* ========================================
+   Warm Glass Calculator
+   Glassmorphism UI
+======================================== */
+
+/* ===== 01. 디자인 변수 ===== */
+
+:root {
+  /* 배경 */
+  --bg-light: #f8ebd9;
+  --bg-peach: #efd3bc;
+  --bg-caramel: #dba982;
+
+  /* 유리 */
+  --glass-bg: rgba(255, 255, 255, 0.15);
+  --glass-border: rgba(255, 255, 255, 0.65);
+  --glass-highlight: rgba(255, 255, 255, 0.35);
+
+  /* 글자 */
+  --text-primary: #5b3827;
+  --text-secondary: #907568;
+  --text-key: #796a60;
+  --text-white: #fff9f3;
+
+  /* 연산 버튼 */
+  --operator-light: #bd8b66;
+  --operator-dark: #a46e4c;
+
+  /* 그림자 */
+  --shadow-main: 0 28px 65px rgba(126, 78, 48, 0.2);
+  --shadow-key: 0 8px 18px rgba(139, 91, 58, 0.12);
 }
 
+
+/* ===== 02. 기본 설정 ===== */
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+
+  min-height: 100vh;
+  min-height: 100dvh;
+
+  font-family: Arial, "Malgun Gothic", sans-serif;
+
+  color: var(--text-primary);
+
+  background:
+    radial-gradient(circle at 15% 20%,
+      rgba(255, 255, 255, 0.85),
+      transparent 32%),
+    radial-gradient(circle at 85% 80%,
+      rgba(217, 151, 107, 0.45),
+      transparent 34%),
+    linear-gradient(135deg,
+      var(--bg-peach) 0%,
+      var(--bg-light) 48%,
+      var(--bg-caramel) 100%);
+
+  overflow-x: hidden;
+}
+
+
+/* ===== 03. 배경 장식 ===== */
+
+body::before,
+body::after {
+  content: "";
+
+  position: fixed;
+
+  border-radius: 50%;
+
+  pointer-events: none;
+
+  z-index: 0;
+
+  filter: blur(65px);
+}
+
+body::before {
+  width: 260px;
+  height: 260px;
+
+  top: 8%;
+  right: 10%;
+
+  background: rgba(255, 247, 221, 0.55);
+}
+
+body::after {
+  width: 320px;
+  height: 320px;
+
+  bottom: 5%;
+  left: 5%;
+
+  background: rgba(205, 139, 101, 0.22);
+}
+
+
+/* ===== 04. 전체 레이아웃 ===== */
+
+.app-shell {
+  position: relative;
+
+  z-index: 1;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+
+  min-height: 100vh;
+  min-height: 100dvh;
+
+  padding: 24px;
+}
+
+
+/* ===== 05. 계산기 본체 ===== */
+
 .calculator {
-  width: 300px;
-  border: 1px solid #ccc;
-  border-radius: 10px;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  position: relative;
+
+  isolation: isolate;
+
+  width: 100%;
+  max-width: 380px;
+
+  padding: 22px 22px 26px;
+
+  border-radius: 38px;
+
+  background:
+    linear-gradient(145deg,
+      rgba(255, 255, 255, 0.22),
+      rgba(255, 255, 255, 0.09));
+
+  border: 1.5px solid var(--glass-border);
+
+  box-shadow:
+    var(--shadow-main),
+    inset 0 1px 1px rgba(255, 255, 255, 0.5);
+
+  backdrop-filter: blur(26px);
+  -webkit-backdrop-filter: blur(26px);
+
   overflow: hidden;
 }
 
-.history-display {
-  background-color: #054A29;
-  color: #a5a5a5;
-  font-size: 0.8em;
-  padding: 5px 20px 0 20px;
-  text-align: right;
-  min-height: 1.2em;
-  box-sizing: border-box;
+
+/* 유리 표면에 비치는 빛 */
+
+.calculator::before {
+  content: "";
+
+  position: absolute;
+  inset: 0;
+
+  border-radius: inherit;
+
+  background:
+    linear-gradient(160deg,
+      rgba(255, 255, 255, 0.18),
+      transparent 55%);
+
+  pointer-events: none;
+
+  z-index: -1;
 }
 
-.display {
-  background-color: #054A29;
-  color: white;
-  font-size: 2.5em;
-  padding: 10px 20px 20px 20px;
-  text-align: right;
-  box-sizing: border-box;
-  overflow-x: auto;
+
+/* ===== 06. 계산기 상단 ===== */
+
+.calculator-topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  min-height: 38px;
 }
+
+.calculator-brand {
+  display: flex;
+  align-items: center;
+
+  gap: 8px;
+}
+
+.brand-icon {
+  font-size: 18px;
+  line-height: 1;
+
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.brand-text {
+  font-size: 10px;
+  font-weight: 700;
+
+  letter-spacing: 0.16em;
+
+  color: rgba(255, 255, 255, 0.95);
+}
+
+
+/* ===== 07. 사운드 버튼 ===== */
+
+.sound-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 38px;
+  height: 38px;
+
+  flex-shrink: 0;
+
+  border-radius: 50%;
+
+  border: 1px solid rgba(255, 255, 255, 0.65);
+
+  background: rgba(255, 255, 255, 0.18);
+
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.45),
+    0 5px 12px rgba(122, 78, 52, 0.08);
+
+  cursor: pointer;
+
+  transition:
+    transform 0.15s ease,
+    background 0.15s ease;
+}
+
+.sound-toggle:hover {
+  background: rgba(255, 255, 255, 0.32);
+
+  transform: translateY(-1px);
+}
+
+.sound-toggle:active {
+  transform: scale(0.94);
+}
+
+.sound-toggle span {
+  font-size: 17px;
+  line-height: 1;
+}
+
+
+/* ===== 08. 디스플레이 영역 ===== */
+
+.display-section {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+
+  min-width: 0;
+
+  min-height: 152px;
+
+  padding-top: 12px;
+  padding-bottom: 24px;
+}
+
+
+/* 계산 과정 */
+
+.history-display {
+  min-width: 0;
+
+  min-height: 25px;
+
+  padding: 3px 8px;
+
+  color: var(--text-secondary);
+
+  font-size: 14px;
+  font-weight: 500;
+
+  line-height: 1.4;
+
+  text-align: right;
+
+  white-space: nowrap;
+
+  overflow-x: auto;
+
+  scrollbar-width: none;
+}
+
+.history-display::-webkit-scrollbar {
+  display: none;
+}
+
+
+/* 계산 결과 */
+
+.display {
+  display: block;
+
+  width: 100%;
+  min-width: 0;
+
+  min-height: 75px;
+
+  padding: 8px 8px 12px;
+
+  color: var(--text-primary);
+
+  font-size: clamp(38px, 10vw, 52px);
+  font-weight: 500;
+
+  line-height: 1.25;
+
+  letter-spacing: -0.035em;
+
+  text-align: right;
+
+  white-space: nowrap;
+
+  overflow-x: auto;
+  overflow-y: hidden;
+
+  scrollbar-width: none;
+}
+
+.display::-webkit-scrollbar {
+  display: none;
+}
+
+
+/* 긴 숫자 표시 */
+
+.display.is-long {
+  font-size: 38px;
+}
+
+.display.is-very-long {
+  font-size: 29px;
+}
+
+
+/* ===== 09. 키패드 그리드 ===== */
 
 .buttons {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+
+  gap: 12px;
+
+  align-items: stretch;
+
+  width: 100%;
 }
 
-button {
-  padding: 20px;
-  border: 1px solid #eee;
-  background-color: #f7f7f7;
-  font-size: 1.2em;
+
+/* ===== 10. 버튼 공통 ===== */
+
+.key {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+  min-width: 0;
+
+  aspect-ratio: 1 / 1;
+
+  padding: 0;
+
+  border: 1px solid rgba(255, 255, 255, 0.6);
+
+  border-radius: 50%;
+
+  font-family: inherit;
+
+  font-size: 24px;
+  font-weight: 500;
+
+  line-height: 1;
+
   cursor: pointer;
-  outline: none;
-  transition: background-color 0.1s;
+
+  user-select: none;
+
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+
+  touch-action: manipulation;
+
+  transition:
+    transform 0.14s ease,
+    background 0.14s ease,
+    box-shadow 0.14s ease,
+    filter 0.14s ease;
 }
 
-button:active {
-  filter: brightness(0.85);
+.key:hover {
+  transform: translateY(-1px);
 }
 
-/* 특수 버튼 스타일 */
-.operator {
-  background-color: #137547;
-  color: white;
+.key:active {
+  transform: scale(0.95);
 }
 
-.clear,
-.operator[data-op="neg"],
-.operator[data-op="percent"] {
-  background-color: #5BBA6F;
-  color: black;
+.key:focus-visible,
+.sound-toggle:focus-visible {
+  outline: 3px solid rgba(100, 60, 40, 0.65);
+
+  outline-offset: 3px;
 }
 
-.equals {
-  background-color: #137547;
-  color: white;
-  grid-column: span 1;
-  /* 명시적 설정 */
+
+/* ===== 11. 유리 숫자 버튼 ===== */
+
+.key--glass {
+  color: var(--text-key);
+
+  background:
+    linear-gradient(145deg,
+      rgba(255, 255, 255, 0.32),
+      rgba(255, 255, 255, 0.12));
+
+  border: 1px solid rgba(255, 255, 255, 0.7);
+
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.55),
+    var(--shadow-key);
+
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
 }
 
-.zero {
+.key--glass:hover {
+  background:
+    linear-gradient(145deg,
+      rgba(255, 255, 255, 0.48),
+      rgba(255, 255, 255, 0.18));
+}
+
+
+/* ===== 12. 특수 기능 버튼 ===== */
+
+.key--utility {
+  font-size: 19px;
+
+  font-weight: 500;
+
+  color: var(--text-key);
+}
+
+
+/* ===== 13. 연산 버튼 ===== */
+
+.key--operator {
+  color: var(--text-white);
+
+  background:
+    linear-gradient(180deg,
+      var(--operator-light),
+      var(--operator-dark));
+
+  border: 1px solid rgba(255, 255, 255, 0.28);
+
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.2),
+    0 9px 18px rgba(136, 84, 48, 0.22);
+}
+
+.key--operator:hover {
+  filter: brightness(1.07);
+}
+
+
+/* ===== 14. 0 버튼 ===== */
+
+.key--zero {
   grid-column: span 2;
-  /* 0 버튼을 두 칸 차지하게 함 */
+
+  aspect-ratio: auto;
+
+  height: 82%;
+
+  align-self: center;
+
+  border-radius: 999px;
+}
+
+
+/* ===== 15. 소수점 버튼 ===== */
+
+.key--decimal {
+  align-self: center;
+}
+
+
+/* ===== 16. 등호 버튼 ===== */
+
+.key--equals {
+  aspect-ratio: 0.78;
+
+  border-radius: 24px;
+
+  color: var(--text-white);
+
+  background:
+    linear-gradient(180deg,
+      #ba835b 0%,
+      #9d613d 100%);
+
+  border: 1px solid rgba(255, 255, 255, 0.3);
+
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.2),
+    0 10px 20px rgba(131, 78, 43, 0.25);
+}
+
+.key--equals:hover {
+  filter: brightness(1.08);
+}
+
+
+/* ===== 17. 태블릿 및 모바일 ===== */
+
+@media (max-width: 480px) {
+
+  .app-shell {
+    padding: 16px;
+  }
+
+  .calculator {
+    max-width: 360px;
+
+    padding: 18px 18px 22px;
+
+    border-radius: 32px;
+  }
+
+  .display-section {
+    min-height: 138px;
+
+    padding-bottom: 18px;
+  }
+
+  .display {
+    font-size: clamp(36px, 11vw, 48px);
+
+    min-height: 70px;
+  }
+
+  .display.is-long {
+    font-size: 32px;
+  }
+
+  .display.is-very-long {
+    font-size: 26px;
+  }
+
+  .buttons {
+    gap: 10px;
+  }
+
+  .key {
+    font-size: 22px;
+  }
+
+  .key--utility {
+    font-size: 17px;
+  }
+
+  .key--equals {
+    border-radius: 22px;
+  }
+}
+
+
+/* ===== 18. 작은 모바일 ===== */
+
+@media (max-width: 360px) {
+
+  .app-shell {
+    padding: 12px;
+  }
+
+  .calculator {
+    padding: 16px;
+
+    border-radius: 28px;
+  }
+
+  .buttons {
+    gap: 8px;
+  }
+
+  .key {
+    font-size: 20px;
+  }
+
+  .key--utility {
+    font-size: 15px;
+  }
+
+  .display {
+    font-size: 38px;
+  }
+
+  .display.is-long {
+    font-size: 29px;
+  }
+
+  .display.is-very-long {
+    font-size: 23px;
+  }
+}
+
+
+/* ===== 19. 화면 높이가 낮은 경우 ===== */
+
+@media (max-height: 650px) {
+
+  .app-shell {
+    align-items: flex-start;
+  }
+
+  .display-section {
+    min-height: 110px;
+  }
+}
+
+
+/* ===== 20. 애니메이션 감소 설정 ===== */
+
+@media (prefers-reduced-motion: reduce) {
+
+  .key,
+  .sound-toggle {
+    transition: none;
+  }
+
 }

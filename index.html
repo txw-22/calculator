@@ -4,42 +4,100 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Calculator</title>
-  <link rel="stylesheet" href="./styles.css?v=20261013-mobile">
-  <link rel="shortcut icon" href="./favicon/wx.ico" type="image/x-icon" />
-  <link rel="icon" href="./favicon/wx.svg" type="image/svg" />
+
+  <meta name="description" content="따뜻한 글래스모피즘 디자인과 Soft Click 사운드를 적용한 계산기입니다.">
+
+  <title>Warm Glass Calculator</title>
+
+  <link rel="stylesheet" href="./styles.css">
+
+  <link rel="shortcut icon" href="./favicon/wx.ico" type="image/x-icon">
+
+  <link rel="icon" href="./favicon/wx.svg" type="image/svg+xml">
 </head>
 
 <body>
-  <div class="calculator">
-    <div class="history-display" id="history-display"></div>
-    <div class="display" id="display">0</div>
-    <div class="buttons">
-      <button class="clear" data-type="clear">AC</button>
-      <button class="operator" data-op="neg">+/-</button>
-      <button class="operator" data-op="percent">%</button>
-      <button class="operator" data-op="divide">÷</button>
 
-      <button class="number" data-num="7">7</button>
-      <button class="number" data-num="8">8</button>
-      <button class="number" data-num="9">9</button>
-      <button class="operator" data-op="multiply">x</button>
+  <main class="app-shell">
 
-      <button class="number" data-num="4">4</button>
-      <button class="number" data-num="5">5</button>
-      <button class="number" data-num="6">6</button>
-      <button class="operator" data-op="subtract">-</button>
+    <section class="calculator" aria-label="계산기">
 
-      <button class="number" data-num="1">1</button>
-      <button class="number" data-num="2">2</button>
-      <button class="number" data-num="3">3</button>
-      <button class="operator" data-op="add">+</button>
+      <!-- 상단 영역 -->
+      <header class="calculator-topbar">
 
-      <button class="number zero" data-num="0">0</button>
-      <button class="number" data-num=".">.</button>
-      <button class="equals" data-op="equals">=</button>
-    </div>
-  </div>
+        <div class="calculator-brand">
+          <span class="brand-icon" aria-hidden="true">◷</span>
+          <span class="brand-text">CALCULATOR</span>
+        </div>
+
+        <!-- 사운드 ON/OFF -->
+        <button type="button" id="sound-toggle" class="sound-toggle" aria-label="키패드 소리 켜기" aria-pressed="false"
+          title="키패드 소리 켜기">
+          <span id="sound-icon" aria-hidden="true">🔇</span>
+        </button>
+
+      </header>
+
+      <!-- 계산 결과 표시 -->
+      <div class="display-section">
+
+        <div class="history-display" id="history-display" aria-label="계산 과정"></div>
+
+        <div class="display" id="display" role="status" aria-live="off" aria-label="계산 결과">0</div>
+
+      </div>
+
+      <!-- 계산기 키패드 -->
+      <div class="buttons" aria-label="계산기 키패드">
+
+        <!-- 첫 번째 줄 -->
+        <button type="button" class="key key--glass key--utility" data-type="clear">AC</button>
+
+        <button type="button" class="key key--glass key--utility" data-op="neg" aria-label="부호 변경">+/−</button>
+
+        <button type="button" class="key key--glass key--utility" data-op="percent" aria-label="백분율">%</button>
+
+        <button type="button" class="key key--operator" data-op="divide" aria-label="나누기">÷</button>
+
+        <!-- 두 번째 줄 -->
+        <button type="button" class="key key--glass" data-num="7">7</button>
+
+        <button type="button" class="key key--glass" data-num="8">8</button>
+
+        <button type="button" class="key key--glass" data-num="9">9</button>
+
+        <button type="button" class="key key--operator" data-op="multiply" aria-label="곱하기">×</button>
+
+        <!-- 세 번째 줄 -->
+        <button type="button" class="key key--glass" data-num="4">4</button>
+
+        <button type="button" class="key key--glass" data-num="5">5</button>
+
+        <button type="button" class="key key--glass" data-num="6">6</button>
+
+        <button type="button" class="key key--operator" data-op="subtract" aria-label="빼기">−</button>
+
+        <!-- 네 번째 줄 -->
+        <button type="button" class="key key--glass" data-num="1">1</button>
+
+        <button type="button" class="key key--glass" data-num="2">2</button>
+
+        <button type="button" class="key key--glass" data-num="3">3</button>
+
+        <button type="button" class="key key--operator" data-op="add" aria-label="더하기">+</button>
+
+        <!-- 다섯 번째 줄 -->
+        <button type="button" class="key key--glass key--zero" data-num="0">0</button>
+
+        <button type="button" class="key key--glass key--decimal" data-num="." aria-label="소수점">.</button>
+
+        <button type="button" class="key key--equals" data-op="equals" aria-label="계산하기">=</button>
+
+      </div>
+
+    </section>
+
+  </main>
 
   <script src="./script.js"></script>
 
